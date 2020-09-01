@@ -24,4 +24,6 @@ It should respond with a payload of:
 
 ## Requirements
 - .NET Core API that can be run locally and tested using Postman or other similar tools
-- 
+- Use git and GitHub for version control
+- Create a new GitHub repo and share it with karl@coterieinsurance.com
+- **Have fun!** We're interested in seeing how you approach the challenge and how you solve problems with code. The goal is for you to be successful, so if you have any questions or something doesn't seem clear don't hesitate to ask. Asking questions and seeking clarification isn't a negative indicator about your skills - it shows you care and that you want to do well. Asking questions is *always* encouraged at Coterie, and our hiring process is no different.
