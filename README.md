@@ -1,4 +1,4 @@
-# Backend Take Home Project
+# Backend Take-Home Project
 ## Task
 One of Coterie's core backend projects is our insurance quote rating engine and API. You'll use an Excel sheet to create a simplified rating engine and quote API.
 
