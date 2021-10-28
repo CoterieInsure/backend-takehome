@@ -25,7 +25,7 @@ It should respond with a payload of:
 ## Requirements
 - .NET Core API with a `POST` endpoint that accepts and returns data per the above task description
 - API can be run locally and tested using Postman or other similar tools
-- Description of what features, functionality, etc. you would add next and how you would implement them - you shouldn't spend more than a few hours on this project, so we want to know what you'd do next (and how you'd do it) if you had more time
+- Description of what features, functionality, etc. you would add next and how you would implement them - you shouldn't spend more than 3 hours on this project, so we want to know what you'd do next (and how you'd do it) if you had more time
 - Use git and GitHub for version control
 - **Have fun!** We're interested in seeing how you approach the challenge and how you solve problems with code. The goal is for you to be successful, so if you have any questions or something doesn't seem clear don't hesitate to ask. Asking questions and seeking clarification isn't a negative indicator about your skills - it shows you care and that you want to do well. Asking questions is *always* encouraged at Coterie, and our hiring process is no different.
 
@@ -35,4 +35,4 @@ It should respond with a payload of:
 - [ ] API accepts `POST` and returns data per above requirements
 - [ ] Repo README has instructions for running and testing the API
 - [ ] Repo README has information about what you'd do next, per above requirements
-- [ ] Create a new GitHub repo and share it with karl@coterieinsurance.com
+- [ ] Create a new GitHub repo
