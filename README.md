@@ -1,93 +1,130 @@
-# Backend Take-home Asessment
+# Backend Take-Home Assessment
 
-## The Assignment:
+## The Assignment
 
-One of Coterie's core backend projects is our insurance quote rating engine and API. You'll use an Excel sheet to create a simplified rating engine and quote API.
+Build a simplified insurance premium **rating engine API** and a **mid-term endorsement endpoint**. You will implement business logic, validation, and tests for a .NET 8 minimal API.
 
-In this repo is an Excel sheet (Mini_Rater.xlsx) with a simplified insurance rating algorithm. Your job is to translate that into a C# .NET Core API.
+The rate tables are provided in `appsettings.json` under the `RatingTables` section. Your job is to wire up the scaffold code into a working API that calculates premiums correctly.
 
-The cells shaded blue represent inputs that the API should take in as a JSON payload. Cells B6 through B9 each have a formula to be implemented to calculate their value (or they contain a hardcoded value). The tables to the right show the possible states and business inputs and their associated values. Cell B11 has a formula which is used to calculate the Total Premium, which is the result that the API should return.
+## Time
 
-## Time:
+Carve out **4-5 hours**. If you finish faster, great. If not, limit yourself and do not spend longer than 5 hours MAX. We would rather see a well-structured partial solution than a rushed complete one.
 
-Carve out 3-4 hours and create an API endpoint. We hope you can spend 3-4 hours on this project. If you can finish faster — great! If not, limit yourself and do not spend longer than 4 hours MAX.
+## Getting Started
+
+**Prerequisites:** [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+
+```bash
+dotnet restore
+dotnet build
+dotnet test
+dotnet run --project Assessment.Api
+```
+
+The API will be available at `http://localhost:5000` with Swagger UI at `/swagger`.
+
+## What We Provide
+
+The scaffold includes the project structure, interfaces, request/response models, a middleware skeleton, a sample validator, a sample Bogus faker, and the rate tables in configuration. You implement the business logic.
+
+| File | Purpose |
+|---|---|
+| `Program.cs` | Minimal hosting — register your services here |
+| `Endpoints.cs` | Endpoint stubs with TODO markers — wire up your services |
+| `Services/IRatingService.cs` | Interface your rating service must implement |
+| `Services/ICarrierApiClient.cs` | Simulated external dependency — implement this |
+| `Middleware/ExceptionHandler.cs` | Exception middleware — add your custom exception types |
+| `Validation/RatingRequestValidator.cs` | Sample FluentValidation validator — expand it |
+| `Validation/EndorsementRequestValidator.cs` | Empty validator — implement it |
+| `Mapping/MappingProfile.cs` | Empty AutoMapper profile — define your mappings |
+| `appsettings.json` | Rate tables and state mappings |
 
 ## Assessment Requirements
 
-- Create a new public GitHub repo 
-- Create a new controller that will:
-    - Accept the payload described below.
-    - Return the response model described below.
-    - Utilize a service that functions in accordance to the Business rules stated below
-- Repo README has instructions for running and testing the API (basic instructions only, nothing too involved)
-- Unit tests are required (We have provided some sample tests if you have not used NUnit/Moq before) and provided links to their documentation and usage.
+### Part 1: Rating Endpoint
 
-## Business rules:
+Implement `POST /api/v1/rating` that:
 
-- State abbreviation and full state name is allowed. 
-    - When given full state name, convert to abbreviation in response
-- Calculate premium for each state for the given business and revenue amount
-- Only Plumber, Architect, and Programmer are supported values for business value
-- Only Texas, Florida, and Ohio are supported values for states
-    - If one value is not supported, then treat the entire request as invalid.
+- Accepts a JSON payload with `business`, `revenue`, and `states`
+- Calculates the premium for each state using the rate tables in `appsettings.json`
+- Returns bare DTO responses (no wrapper envelope)
 
-## Request/Response criteria
+**Premium formula:** `Premium = Revenue / 1000 * BasePremiumPerThousandRevenue * BusinessFactor * StateFactor`
 
-Example Request: If the API receives a payload of:
-
+**Example request:**
 ```json
 {
   "business": "Plumber",
   "revenue": 6000000,
-  "states": [
-    "TX",
-    "OH",
-    "FLORIDA"
-  ]
+  "states": ["TX", "OH", "FLORIDA"]
 }
 ```
 
-Example Response: It should respond with a payload of:
-
+**Example response:**
 ```json
 {
   "business": "Plumber",
   "revenue": 6000000,
   "premiums": [
-    {
-      "premium": 11316,
-      "state": "TX"
-    },
-    {
-      "premium": 12000,
-      "state": "OH"
-    },
-    {
-      "premium": 14400,
-      "state": "FL"
-    }
-  ],
-  "isSuccessful": true,
-  "transactionId": "27373db4-56c3-4383-a2e1-f55c77b4aa3f"
+    { "premium": 11316, "state": "TX" },
+    { "premium": 12000, "state": "OH" },
+    { "premium": 14400, "state": "FL" }
+  ]
 }
 ```
 
-## Boiler plate code:
+### Part 2: Endorsement Endpoint
 
-We have provided you with boiler plate code and project set up so you can focus on solving the actual technical challenge. You may start your own, but please ensure to include unit tests.
+Implement `POST /api/v1/endorsements` that:
 
-Boiler plate code is using [****.NET 5.0****](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
+- Accepts a policy's original and updated revenue, business type, state, policy dates, and endorsement effective date
+- Calculates the pro-rata premium adjustment for the remaining policy term
+- Formula: `ProRataAdjustment = (NewAnnualPremium - OriginalAnnualPremium) * (DaysRemaining / TotalDays)`
+- `DaysRemaining` = days from endorsement effective date to policy end date
+- `TotalDays` = days from policy start date to policy end date
 
-A global error handler has been set up in this project. Feel free to use or modify how you see fit.
+### Business Rules
 
-Note: Test Controller, Service, and Unit Tests are provided as examples only and do not contain any “hints”.
+- State abbreviation **and** full state name are both accepted; always respond with abbreviation
+- Only **Plumber**, **Architect**, and **Programmer** are supported business types
+- Only **Texas**, **Florida**, and **Ohio** are supported states
+- If any value is unsupported, reject the entire request
+- Revenue must be positive
+- Endorsement effective date must fall within the policy term
 
+### Technical Requirements
 
-## Evaluation Criteria:
+These reflect the patterns and libraries we use in production:
 
-Once your project is submitted to the recruiter, we have an internal team review the code and run the project locally and test via Postman. We are mainly taking into consideration the following criteria:
+| Requirement | Details |
+|---|---|
+| **Minimal API endpoints** | Use `MapGroup`/`MapPost` with `[FromServices]` injection (already scaffolded in `Endpoints.cs`) |
+| **FluentValidation** | Validate requests using `AbstractValidator<T>` classes — expand the provided stubs |
+| **Custom exception middleware** | Create typed exceptions (e.g., `UnsupportedBusinessTypeException`) and handle them in `ExceptionHandler.cs` |
+| **Async services** | All service methods must be `async Task<T>` |
+| **AutoMapper** | Map between request DTOs, domain models, and response DTOs via `MappingProfile` |
+| **DI registration** | Register services in `Program.cs` with appropriate lifetimes (`AddScoped`, `AddSingleton`) |
+| **ICarrierApiClient** | Implement the simulated external carrier API (use `Task.Delay` to simulate latency) |
+| **Unit tests** | Use NUnit + Moq + Bogus. A sample faker is provided in `Assessment.UnitTests/Fakers/` |
 
-- If the business rules are implemented correctly and rating is working properly.
-- Best practice / industry standards and REST guidelines when building your endpoint.
-- The quality of automated unit tests. There is an expectation the code will have some degree of code coverage in your project. The boiler plate project includes the unit test framework and Moq setup.
-- Code organization and structure.
+### Part 3: Conceptual Assessment
+
+Complete the written assessment in `CONCEPTUAL_ASSESSMENT.md`. This is a separate evaluation of your ability to reason about complex software engineering problems in the insurance domain.
+
+## Evaluation Criteria
+
+| Category | Weight | What we look for |
+|---|---|---|
+| **Correctness** | 30% | Business rules implemented correctly, edge cases handled, premiums calculate accurately |
+| **API Design** | 20% | Minimal API conventions, proper HTTP status codes, typed exceptions for error cases |
+| **Architecture** | 20% | Service separation, DI lifetimes, async patterns, AutoMapper usage, configuration access |
+| **Testing** | 20% | Meaningful unit tests, Bogus fakers for test data, Moq for dependencies, edge case coverage |
+| **Code Quality** | 10% | Naming, organization, readability — no over-engineering |
+
+## Submission
+
+1. Create a new **private** GitHub repo
+2. Push your completed solution
+3. Add instructions for running and testing (if different from above)
+4. Include your completed `CONCEPTUAL_ASSESSMENT.md`
+5. Share access with the recruiter

@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coterie.Api", "Coterie.Api\Coterie.Api.csproj", "{AA0ECD36-26B7-4112-927F-9270B985BA10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assessment.Api", "Assessment.Api\Assessment.Api.csproj", "{AA0ECD36-26B7-4112-927F-9270B985BA10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coterie.UnitTests", "Coterie.UnitTests\Coterie.UnitTests.csproj", "{4EEA3805-F777-4089-805D-1928EC2CF1FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assessment.UnitTests", "Assessment.UnitTests\Assessment.UnitTests.csproj", "{4EEA3805-F777-4089-805D-1928EC2CF1FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
