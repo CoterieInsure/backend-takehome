@@ -151,8 +151,8 @@ Complete `CONCEPTUAL_ASSESSMENT.md`. Pick **one question from ONE of the 2 categ
 
 ## Submission
 
-1. Create a new **private** GitHub repo
+1. Create a new GitHub repo
 2. Push your completed solution
 3. Include your completed `CONCEPTUAL_ASSESSMENT.md`
 4. Include instructions for running/testing if they differ from the above
-5. Share access with the recruiter
+5. Share repo location with recruiter
