@@ -1,4 +1,5 @@
 using Assessment.Api.Middleware;
+using Assessment.Api.Services;
 using FluentValidation;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -6,16 +7,15 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// TODO: Register your services here with appropriate lifetimes
+// CarrierApiClient is pre-built — registered here as a singleton.
+builder.Services.AddSingleton<ICarrierApiClient, CarrierApiClient>();
+
+// TODO: Register your RatingService here with the appropriate lifetime
 // Example:
 //   builder.Services.AddScoped<IRatingService, RatingService>();
-//   builder.Services.AddSingleton<ICarrierApiClient, CarrierApiClient>();
 
 // Register FluentValidation validators from this assembly
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
-// TODO: Register AutoMapper profiles
-//   builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

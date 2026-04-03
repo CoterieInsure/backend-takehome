@@ -1,16 +1,21 @@
 # Backend Take-Home Assessment
 
-## The Assignment
+## Overview
 
-Build a simplified insurance premium **rating engine API** and a **mid-term endorsement endpoint**. You will implement business logic, validation, and tests for a .NET 8 minimal API.
+This assessment has **two parts**:
 
-The rate tables are provided in `appsettings.json` under the `RatingTables` section. Your job is to wire up the scaffold code into a working API that calculates premiums correctly.
+| Part | What | Time |
+|------|------|------|
+| **Part 1: Coding** | Implement a premium rating API endpoint | ~2 hours |
+| **Part 2: Written** | Answer 2 conceptual questions in `CONCEPTUAL_ASSESSMENT.md` | ~1 hour |
 
-## Time
+**Total time: ~3 hours.** If you finish faster, great. Please do not spend more than 4 hours. We would rather see a well-structured partial solution than a rushed complete one.
 
-Carve out **4-5 hours**. If you finish faster, great. If not, limit yourself and do not spend longer than 5 hours MAX. We would rather see a well-structured partial solution than a rushed complete one.
+---
 
-## Getting Started
+## Part 1: Coding Assessment
+
+### Getting Started
 
 **Prerequisites:** [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
@@ -23,35 +28,41 @@ dotnet run --project Assessment.Api
 
 The API will be available at `http://localhost:5000` with Swagger UI at `/swagger`.
 
-## What We Provide
+### What We Provide
 
-The scaffold includes the project structure, interfaces, request/response models, a middleware skeleton, a sample validator, a sample Bogus faker, and the rate tables in configuration. You implement the business logic.
+The scaffold includes the project structure, interfaces, models, middleware skeleton, a sample validator, a sample Bogus faker, rate tables in configuration, a pre-built carrier API client, and custom exception types. **You implement the business logic.**
 
-| File | Purpose |
-|---|---|
-| `Program.cs` | Minimal hosting — register your services here |
-| `Endpoints.cs` | Endpoint stubs with TODO markers — wire up your services |
-| `Services/IRatingService.cs` | Interface your rating service must implement |
-| `Services/ICarrierApiClient.cs` | Simulated external dependency — implement this |
-| `Middleware/ExceptionHandler.cs` | Exception middleware — add your custom exception types |
-| `Validation/RatingRequestValidator.cs` | Sample FluentValidation validator — expand it |
-| `Validation/EndorsementRequestValidator.cs` | Empty validator — implement it |
-| `Mapping/MappingProfile.cs` | Empty AutoMapper profile — define your mappings |
-| `appsettings.json` | Rate tables and state mappings |
+| File | Status | Purpose |
+|------|--------|---------|
+| `Program.cs` | Modify | Register your services here |
+| `Endpoints.cs` | Modify | Wire up your rating service |
+| `Services/IRatingService.cs` | Implement | Interface your service must implement |
+| `Services/ICarrierApiClient.cs` | Provided | Interface for the external carrier dependency |
+| `Services/CarrierApiClient.cs` | **Pre-built** | Simulated carrier API — call it, don't modify it |
+| `Exceptions/UnsupportedBusinessTypeException.cs` | **Pre-built** | Throw from your service for invalid business types |
+| `Exceptions/InvalidStateException.cs` | **Pre-built** | Throw from your service for invalid/ineligible states |
+| `Middleware/ExceptionHandler.cs` | Modify | Map the custom exceptions to HTTP status codes |
+| `Validation/RatingRequestValidator.cs` | Modify | Expand validation rules |
+| `appsettings.json` | Read-only | Rate tables and state mappings |
 
-## Assessment Requirements
-
-### Part 1: Rating Endpoint
+### The Task
 
 Implement `POST /api/v1/rating` that:
 
-- Accepts a JSON payload with `business`, `revenue`, and `states`
-- Calculates the premium for each state using the rate tables in `appsettings.json`
-- Returns bare DTO responses (no wrapper envelope)
+1. Accepts a JSON payload with `business`, `revenue`, and `states`
+2. Validates the request using FluentValidation
+3. Calls the carrier API to validate eligibility for each business/state combination
+4. Calculates the premium for each eligible state using the rate tables in `appsettings.json`
+5. Returns the response as a bare DTO (no wrapper envelope)
 
-**Premium formula:** `Premium = Revenue / 1000 * BasePremiumPerThousandRevenue * BusinessFactor * StateFactor`
+**Premium formula:**
+
+```
+Premium = Revenue / 1000 × BasePremiumPerThousandRevenue × BusinessFactor × StateFactor
+```
 
 **Example request:**
+
 ```json
 {
   "business": "Plumber",
@@ -61,6 +72,7 @@ Implement `POST /api/v1/rating` that:
 ```
 
 **Example response:**
+
 ```json
 {
   "business": "Plumber",
@@ -73,58 +85,51 @@ Implement `POST /api/v1/rating` that:
 }
 ```
 
-### Part 2: Endorsement Endpoint
-
-Implement `POST /api/v1/endorsements` that:
-
-- Accepts a policy's original and updated revenue, business type, state, policy dates, and endorsement effective date
-- Calculates the pro-rata premium adjustment for the remaining policy term
-- Formula: `ProRataAdjustment = (NewAnnualPremium - OriginalAnnualPremium) * (DaysRemaining / TotalDays)`
-- `DaysRemaining` = days from endorsement effective date to policy end date
-- `TotalDays` = days from policy start date to policy end date
-
 ### Business Rules
 
-- State abbreviation **and** full state name are both accepted; always respond with abbreviation
+- State abbreviation (`TX`) **and** full state name (`Texas`) are both accepted; always respond with the abbreviation
 - Only **Plumber**, **Architect**, and **Programmer** are supported business types
 - Only **Texas**, **Florida**, and **Ohio** are supported states
 - If any value is unsupported, reject the entire request
 - Revenue must be positive
-- Endorsement effective date must fall within the policy term
+- The carrier does not write all business/state combinations — your service must handle ineligible responses from the carrier API
 
 ### Technical Requirements
 
-These reflect the patterns and libraries we use in production:
-
 | Requirement | Details |
-|---|---|
-| **Minimal API endpoints** | Use `MapGroup`/`MapPost` with `[FromServices]` injection (already scaffolded in `Endpoints.cs`) |
-| **FluentValidation** | Validate requests using `AbstractValidator<T>` classes — expand the provided stubs |
-| **Custom exception middleware** | Create typed exceptions (e.g., `UnsupportedBusinessTypeException`) and handle them in `ExceptionHandler.cs` |
+|-------------|---------|
+| **Minimal API endpoints** | Use `MapGroup`/`MapPost` with `[FromServices]` injection (scaffolded in `Endpoints.cs`) |
+| **FluentValidation** | Expand the provided validator stub to cover all business rules |
+| **Custom exception middleware** | Wire the provided exception types into `ExceptionHandler.cs` |
 | **Async services** | All service methods must be `async Task<T>` |
-| **AutoMapper** | Map between request DTOs, domain models, and response DTOs via `MappingProfile` |
-| **DI registration** | Register services in `Program.cs` with appropriate lifetimes (`AddScoped`, `AddSingleton`) |
-| **ICarrierApiClient** | Implement the simulated external carrier API (use `Task.Delay` to simulate latency) |
+| **DI registration** | Register your `RatingService` in `Program.cs` with appropriate lifetime |
+| **ICarrierApiClient** | Call the pre-built client from your service; mock it in tests |
 | **Unit tests** | Use NUnit + Moq + Bogus. A sample faker is provided in `Assessment.UnitTests/Fakers/` |
 
-### Part 3: Conceptual Assessment
+---
 
-Complete the written assessment in `CONCEPTUAL_ASSESSMENT.md`. This is a separate evaluation of your ability to reason about complex software engineering problems in the insurance domain.
+## Part 2: Written Assessment
+
+Complete `CONCEPTUAL_ASSESSMENT.md`. Pick **one question from each of 2 categories** (2 questions total, 300–500 words each). No prior insurance experience is required — each question provides enough context to reason about the problem.
+
+---
 
 ## Evaluation Criteria
 
 | Category | Weight | What we look for |
-|---|---|---|
-| **Correctness** | 30% | Business rules implemented correctly, edge cases handled, premiums calculate accurately |
-| **API Design** | 20% | Minimal API conventions, proper HTTP status codes, typed exceptions for error cases |
-| **Architecture** | 20% | Service separation, DI lifetimes, async patterns, AutoMapper usage, configuration access |
-| **Testing** | 20% | Meaningful unit tests, Bogus fakers for test data, Moq for dependencies, edge case coverage |
-| **Code Quality** | 10% | Naming, organization, readability — no over-engineering |
+|----------|--------|------------------|
+| **Correctness** | 30% | Business rules implemented correctly, premiums calculate accurately, edge cases handled |
+| **Architecture & API Design** | 25% | Service separation, DI lifetimes, async patterns, proper HTTP status codes, typed exceptions |
+| **Testing** | 25% | Meaningful unit tests, Moq for ICarrierApiClient, Bogus fakers, edge case coverage |
+| **Conceptual Reasoning** | 15% | Clarity of thought, architectural trade-offs, awareness of failure modes |
+| **Code Quality** | 5% | Naming, organization, readability |
+
+---
 
 ## Submission
 
 1. Create a new **private** GitHub repo
 2. Push your completed solution
-3. Add instructions for running and testing (if different from above)
-4. Include your completed `CONCEPTUAL_ASSESSMENT.md`
+3. Include your completed `CONCEPTUAL_ASSESSMENT.md`
+4. Include instructions for running/testing if they differ from the above
 5. Share access with the recruiter

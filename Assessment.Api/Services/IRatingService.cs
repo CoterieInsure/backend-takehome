@@ -11,11 +11,8 @@ public interface IRatingService
 {
     /// <summary>
     /// Calculate premiums for the given business across the requested states.
+    /// Must call ICarrierApiClient.ValidateEligibilityAsync for each state to confirm
+    /// the carrier will write the business in that state before calculating.
     /// </summary>
     Task<RatingResponse> CalculatePremiumAsync(RatingRequest request);
-
-    /// <summary>
-    /// Process a mid-term endorsement and calculate the pro-rata premium adjustment.
-    /// </summary>
-    Task<EndorsementResponse> ProcessEndorsementAsync(EndorsementRequest request);
 }

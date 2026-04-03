@@ -1,11 +1,11 @@
 # Conceptual Assessment
 
-This written assessment evaluates your ability to reason about complex software engineering problems in the property & casualty (P&C) insurance domain. **No prior insurance experience is required** — each question provides enough context for you to reason about the problem.
+This written assessment evaluates your ability to reason about software engineering problems in the property & casualty (P&C) insurance domain. **No prior insurance experience is required** — each question provides enough context to reason about the problem.
 
 ## Instructions
 
-- Pick **one question from each category** (4 questions total)
-- Each answer should be **300-500 words**
+- Pick **one question from each category** (2 questions total)
+- Each answer should be **300–500 words**
 - Diagrams are encouraged (embed images or use text-based diagrams)
 - Focus on: clarity of thought, architectural reasoning, awareness of failure modes, and practical trade-offs
 
@@ -41,33 +41,7 @@ How would you design this endpoint to be **idempotent** (safe to retry)? What ha
 
 A renewal pipeline must identify policies approximately 120 days before expiration, re-rate them at current rates (which may differ significantly from the expiring premium), give producers/agents a review window to adjust coverage, and auto-bind near expiration unless the producer opts out.
 
-This is a long-running, multi-stage workflow spanning weeks with multiple decision points. How would you architect this system? What patterns would you consider (saga, choreography, orchestration, timer-based jobs) and why? How do you handle the "long tail" — the last 10-20% of policies that need disproportionate attention and are at risk of being missed?
-
----
-
-## Category C: Financial Accuracy & Reconciliation (pick 1)
-
-### C1. Premium Audit
-
-The premium charged at policy inception is an *estimate* based on projected exposures (e.g., projected annual payroll for Workers' Comp, projected revenue for General Liability). After the policy expires, the carrier audits the insured's actual exposures. If actual payroll was higher than projected, additional premium is owed. If lower, a refund is due. For loss-sensitive programs, retrospective adjustments can occur at 6-month intervals for 3-5 years after expiration.
-
-Describe how you would design a system to handle premium audit adjustments. How do you maintain financial accuracy across these long time horizons (potentially 5+ years of adjustments for a single policy)? How do you handle disputes where the insured disagrees with the audit findings?
-
-### C2. Endorsement Premium History
-
-An endorsement changes coverage mid-term. The pro-rata premium adjustment is calculated as: `(Annual Premium Change) x (Days Remaining / Total Days in Policy)`. A single policy can have many endorsements over its term, each creating a new premium version.
-
-Describe how you would calculate the correct total premium owed at any point in time, considering the full endorsement history. How would you handle an endorsement that is later reversed (e.g., the insured added a location then removed it)? What data structures and query patterns support this efficiently?
-
----
-
-## Category D: Regulatory & Multi-Jurisdiction Complexity (pick 1)
-
-### D1. State-by-State Variation
-
-Insurance is regulated at the state level. Tax rates, surcharges, mandatory endorsement forms, available products, and even whether a product can be sold at all vary by jurisdiction. Some states require prior approval before using new rates or forms; others allow "file and use" or "use and file" regimes with different lead times. A single product expansion to a new state can require 30-90+ days of regulatory filing.
-
-How would you design a system that handles this multi-jurisdiction complexity without creating an unmaintainable tangle of if/else branches or state-specific code paths? What patterns, data structures, or architectural approaches would you use? How do you handle the versioning problem — when a state approves new rates effective on a specific date, how do you ensure quotes use the correct rate table?
+This is a long-running, multi-stage workflow spanning weeks with multiple decision points. How would you architect this system? What patterns would you consider (saga, choreography, orchestration, timer-based jobs) and why? How do you handle the "long tail" — the last 10–20% of policies that need disproportionate attention and are at risk of being missed?
 
 ---
 
@@ -80,12 +54,4 @@ How would you design a system that handles this multi-jurisdiction complexity wi
 
 
 ### Answer B_:
-
-
-
-### Answer C_:
-
-
-
-### Answer D_:
 

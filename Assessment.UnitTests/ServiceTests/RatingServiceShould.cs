@@ -4,16 +4,14 @@ using NUnit.Framework;
 namespace Assessment.UnitTests.ServiceTests;
 
 /// <summary>
-/// Sample test class showing the expected testing patterns.
 /// TODO: Implement your RatingService, then write tests covering:
 ///   - Happy path: valid request returns correct premiums for each state
-///   - Each business type calculates differently
-///   - State name to abbreviation conversion works
-///   - Invalid business type throws appropriate exception
-///   - Invalid state throws appropriate exception
-///   - Empty states array is rejected
-///   - Negative revenue is rejected
-///   - Endorsement pro-rata calculation is correct
+///   - Each business type calculates differently (different BusinessFactors)
+///   - State name to abbreviation conversion works (e.g., "FLORIDA" -> "FL")
+///   - Invalid business type throws UnsupportedBusinessTypeException
+///   - Invalid state throws InvalidStateException
+///   - Carrier eligibility check: Programmer in FL should be rejected
+///   - Mock ICarrierApiClient to test both eligible and ineligible scenarios
 ///
 /// Use the RatingRequestFaker for generating test data.
 /// Use Moq to mock the ICarrierApiClient dependency.
