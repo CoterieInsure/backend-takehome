@@ -145,19 +145,7 @@ Premium = Revenue / 1000 × BasePremiumPerThousandRevenue × BusinessFactor × S
 
 ## Part 2: Written Assessment
 
-Complete `CONCEPTUAL_ASSESSMENT.md`. Pick **one question from each of 2 categories** (2 questions total, 300–500 words each). No prior insurance experience is required — each question provides enough context to reason about the problem.
-
----
-
-## Evaluation Criteria
-
-| Category | Weight | What we look for |
-|----------|--------|------------------|
-| **Correctness** | 30% | Business rules implemented correctly, premiums calculate accurately, edge cases handled |
-| **Architecture & API Design** | 25% | Service separation, DI lifetimes, async patterns, proper HTTP status codes, typed exceptions |
-| **Testing** | 25% | Meaningful unit tests, Moq for ICarrierApiClient, Bogus fakers, edge case coverage |
-| **Conceptual Reasoning** | 15% | Clarity of thought, architectural trade-offs, awareness of failure modes |
-| **Code Quality** | 5% | Naming, organization, readability |
+Complete `CONCEPTUAL_ASSESSMENT.md`. Pick **one question from ONE of the 2 categories** (1 question total, 300–500 words). Prior insurance experience is helpful but not required — each question provides enough context to reason about the problem.
 
 ---
 
