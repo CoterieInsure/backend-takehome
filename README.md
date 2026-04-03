@@ -87,12 +87,47 @@ Premium = Revenue / 1000 × BasePremiumPerThousandRevenue × BusinessFactor × S
 
 ### Business Rules
 
-- State abbreviation (`TX`) **and** full state name (`Texas`) are both accepted; always respond with the abbreviation
+- State abbreviation (`TX`) **and** full state name (`Texas`) are both accepted; always respond with the abbreviation. State name matching must be **case-insensitive** (e.g., `"FLORIDA"`, `"florida"`, and `"Florida"` all resolve to `"FL"`)
 - Only **Plumber**, **Architect**, and **Programmer** are supported business types
 - Only **Texas**, **Florida**, and **Ohio** are supported states
-- If any value is unsupported, reject the entire request
+- If any value is **unsupported** (unknown business type or unknown state), reject the **entire request** with an error
 - Revenue must be positive
-- The carrier does not write all business/state combinations — your service must handle ineligible responses from the carrier API
+- The carrier does not write all business/state combinations. When the carrier returns ineligible for a business/state combination, **omit that state from the response** — this is not an error. If all requested states are ineligible, return a successful response with an empty `premiums` array
+
+### Error Behavior
+
+| Scenario | HTTP Status | Trigger |
+|----------|-------------|---------|
+| Missing/empty fields, negative revenue | `400 Bad Request` | FluentValidation |
+| Unknown business type (e.g., `"Baker"`) | `400 Bad Request` | `UnsupportedBusinessTypeException` |
+| Unknown state (e.g., `"CA"`, `"California"`) | `400 Bad Request` | `InvalidStateException` |
+| Carrier ineligible (e.g., Programmer in FL) | `200 OK` — omit that state from the `premiums` array | No error thrown |
+
+**Example error response (validation failure):**
+
+```json
+{
+  "errors": [
+    { "propertyName": "Revenue", "errorMessage": "'Revenue' must be greater than '0'." }
+  ]
+}
+```
+
+**Example error response (unsupported business type):**
+
+```json
+{
+  "error": "Business type 'Baker' is not supported."
+}
+```
+
+**Example error response (unsupported state):**
+
+```json
+{
+  "error": "State 'CA' is not supported or not eligible for the requested business type."
+}
+```
 
 ### Technical Requirements
 

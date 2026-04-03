@@ -8,7 +8,7 @@ namespace Assessment.Api.Middleware;
 /// Catches unhandled exceptions and maps them to appropriate HTTP status codes.
 ///
 /// TODO: Add case branches for UnsupportedBusinessTypeException and InvalidStateException
-/// (defined in Assessment.Api/Exceptions/) and map them to the correct HTTP status codes.
+/// (defined in Assessment.Api/Exceptions/) and map them to 400 Bad Request.
 /// </summary>
 public class ExceptionHandler(RequestDelegate next)
 {
@@ -28,7 +28,7 @@ public class ExceptionHandler(RequestDelegate next)
     private static async Task HandleExceptionAsync(Exception ex, HttpContext httpContext)
     {
         // TODO: Add cases for UnsupportedBusinessTypeException and InvalidStateException.
-        // Map them to appropriate HTTP status codes (e.g., 400 Bad Request).
+        // Both should return 400 Bad Request with { "error": ex.Message }.
 
         switch (ex)
         {

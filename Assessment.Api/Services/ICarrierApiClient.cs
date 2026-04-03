@@ -5,8 +5,8 @@ namespace Assessment.Api.Services;
 /// In production, this would call the carrier's policy administration system to validate
 /// that the business classification is eligible for coverage.
 ///
-/// TODO: Implement this interface. Your implementation should simulate an async external call
-/// (e.g., using Task.Delay) and return whether the business type is eligible in the given state.
+/// A pre-built implementation (CarrierApiClient) is already registered — do not modify it.
+/// Your RatingService should depend on this interface, and your tests should mock it.
 /// </summary>
 public interface ICarrierApiClient
 {

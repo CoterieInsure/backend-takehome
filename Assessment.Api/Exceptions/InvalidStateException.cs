@@ -1,9 +1,9 @@
 namespace Assessment.Api.Exceptions;
 
 /// <summary>
-/// Thrown when a request specifies a state that is not supported or when the carrier
-/// determines the business type is not eligible in the given state.
+/// Thrown when a request specifies a state that is not supported by the rating engine.
 /// Supported states: TX (Texas), OH (Ohio), FL (Florida).
+/// Note: Carrier ineligibility (e.g., Programmer in FL) is NOT an error — omit the state from the response instead.
 /// </summary>
 public class InvalidStateException : Exception
 {
