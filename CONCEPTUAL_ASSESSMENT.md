@@ -4,9 +4,8 @@ This written assessment evaluates your ability to reason about software engineer
 
 ## Instructions
 
-- Pick **one question from each category** (2 questions total)
-- Each answer should be **300–500 words**
-- Diagrams are encouraged (embed images or use text-based diagrams)
+- Pick **one question from ONE category** (1 question total)
+- The answer should be **300–500 words**
 - Focus on: clarity of thought, architectural reasoning, awareness of failure modes, and practical trade-offs
 
 ---
@@ -45,13 +44,8 @@ This is a long-running, multi-stage workflow spanning weeks with multiple decisi
 
 ---
 
-## Your Answers
+## Your Answer
 
-*(Write your answers below, clearly labeled with the question number you chose)*
+*(Write your answers below, clearly labeled with the category and question number you chose)*
 
-### Answer A_:
-
-
-
-### Answer B_:
 
