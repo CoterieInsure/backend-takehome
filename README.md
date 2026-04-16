@@ -2,9 +2,11 @@
 
 ## Overview
 
-This is a **collaborative pair programming session** that tests how you work with an existing code base.
+This is a **collaborative pair programming session** that tests how you work with an existing code base. You will work through this assessment during a **live session** with Coterie software engineers.
 
-We want to hear your thought process as you work. Talk through your approach, ask questions, and show us how you verify that your implementation meets the requirements.
+You are encouraged to explore the project and familiarize yourself with the tasks before-hand. Please make sure to come prepared with a development environmnet already setup and able to run this code locally.
+
+During the live session, we want to hear your thought process as you work. Talk through your approach, ask questions, and show us how you verify that your implementation meets the requirements.
 
 ### Prerequisites
 - .NET 10.0 SDK
